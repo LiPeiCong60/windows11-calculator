@@ -18,7 +18,18 @@ function clearDisplay() {
 }
 
 function deleteLastDigit() {
-  displayValue.value = displayValue.value.length > 1 ? displayValue.value.slice(0, -1) : '0'
+  const nextValue = displayValue.value.slice(0, -1)
+  displayValue.value = nextValue && nextValue !== '-' ? nextValue : '0'
+}
+
+function toggleSign() {
+  if (displayValue.value === '0') {
+    return
+  }
+
+  displayValue.value = displayValue.value.startsWith('-')
+    ? displayValue.value.slice(1)
+    : `-${displayValue.value}`
 }
 </script>
 
@@ -151,7 +162,7 @@ function deleteLastDigit() {
           <button type="button" @click="inputDigit('3')">3</button>
           <button type="button">＋</button>
 
-          <button type="button">＋/−</button>
+          <button type="button" @click="toggleSign">＋/−</button>
           <button type="button" @click="inputDigit('0')">0</button>
           <button type="button" @click="inputDecimal">.</button>
           <button class="equals-key" type="button">＝</button>
