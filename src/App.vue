@@ -2,6 +2,11 @@
   <div class="calculator-window">
     <header class="title-bar">
       <div class="title-bar__identity">
+        <button class="title-bar__back" type="button" aria-label="返回">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m10 5-7 7 7 7M3 12h18" />
+          </svg>
+        </button>
         <svg
           class="app-icon"
           viewBox="0 0 24 24"
@@ -41,7 +46,7 @@
     </header>
 
     <main class="app-content">
-      <section class="calculator-page" aria-label="标准计算器">
+      <section class="calculator-page" aria-label="标准计算器" hidden>
         <header class="calculator-toolbar">
           <button class="toolbar-button" type="button" aria-label="打开导航菜单">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -129,7 +134,7 @@
         </div>
       </section>
 
-      <aside class="navigation-pane" aria-label="计算器导航菜单">
+      <aside class="navigation-pane" aria-label="计算器导航菜单" hidden>
         <div class="navigation-pane__header">
           <button class="navigation-menu-button" type="button" aria-label="关闭导航菜单">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -166,6 +171,45 @@
           </button>
         </div>
       </aside>
+
+      <section class="settings-page" aria-labelledby="settings-title">
+        <h1 id="settings-title">设置</h1>
+
+        <section class="settings-group" aria-labelledby="appearance-title">
+          <h2 id="appearance-title">外观</h2>
+          <div class="settings-card theme-card">
+            <div>
+              <div class="settings-card__title">应用程序主题</div>
+              <div class="settings-card__description">选择要显示的应用主题</div>
+            </div>
+            <svg class="settings-chevron" viewBox="0 0 16 10" aria-hidden="true">
+              <path d="m1 1 7 7 7-7" />
+            </svg>
+          </div>
+        </section>
+
+        <section class="settings-group about-group" aria-labelledby="about-title">
+          <h2 id="about-title">关于</h2>
+          <div class="settings-card about-card">
+            <div>
+              <div class="settings-card__title">计算器</div>
+              <div class="settings-card__description">© 2025 Microsoft。保留所有权利。</div>
+              <div class="settings-version">11.2605.9.0</div>
+            </div>
+            <svg class="settings-chevron" viewBox="0 0 16 10" aria-hidden="true">
+              <path d="m1 1 7 7 7-7" />
+            </svg>
+          </div>
+
+          <div class="feedback-link">发送反馈</div>
+
+          <p class="about-description">
+            若要了解如何参与 Windows 计算器，请在
+            <span class="github-link">GitHub</span>
+            上查看该项目。
+          </p>
+        </section>
+      </section>
     </main>
   </div>
 </template>
