@@ -754,6 +754,10 @@ button:disabled {
   --focus-ring: #1a1a1a;
   --key-fill-hover: #f6f6f6;
   --key-fill-pressed: #ededed;
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 12%);
+  --shadow-flyout: 4px 0 18px rgb(0 0 0 / 16%);
+  --shadow-panel: -4px 0 18px rgb(0 0 0 / 14%);
+  --shadow-window: 0 18px 48px rgb(0 0 0 / 24%);
   border-color: #a8a8a8;
 }
 
@@ -852,6 +856,10 @@ button:disabled {
   --focus-ring: #fff;
   --key-fill-hover: #424242;
   --key-fill-pressed: #323232;
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 36%);
+  --shadow-flyout: 4px 0 20px rgb(0 0 0 / 42%);
+  --shadow-panel: -4px 0 20px rgb(0 0 0 / 38%);
+  --shadow-window: 0 18px 48px rgb(0 0 0 / 46%);
   border-color: #6d6d6d;
 }
 
@@ -944,6 +952,28 @@ button:disabled {
 
 .calculator-window[data-theme="dark"] .github-link {
   color: #18889a;
+}
+
+.calculator-window {
+  box-shadow: var(--shadow-window);
+}
+
+.keypad button,
+.settings-card,
+.theme-options,
+.memory-panel__list button,
+.history-panel__list button,
+.history-panel__clear {
+  box-shadow: var(--shadow-control);
+}
+
+.navigation-pane {
+  box-shadow: var(--shadow-flyout);
+}
+
+.memory-panel,
+.history-panel {
+  box-shadow: var(--shadow-panel);
 }
 
 .navigation-pane,
@@ -1049,6 +1079,7 @@ button:disabled {
 
 .keypad button:active {
   background: var(--key-fill-pressed);
+  box-shadow: none;
 }
 
 .settings-card:active,
@@ -1056,6 +1087,7 @@ button:disabled {
 .history-panel__list button:active,
 .history-panel__clear:active {
   background: var(--card-fill-pressed);
+  box-shadow: none;
 }
 
 .keypad .equals-key:active {
@@ -1088,6 +1120,7 @@ button:disabled {
     height: 100svh;
     border: 0;
     border-radius: 0;
+    box-shadow: none;
   }
 
   .display-panel {
