@@ -1,8 +1,18 @@
+<script setup>
+import { ref } from 'vue'
+
+const displayValue = ref('0')
+
+function inputDigit(digit) {
+  displayValue.value = displayValue.value === '0' ? digit : `${displayValue.value}${digit}`
+}
+</script>
+
 <template>
   <div class="calculator-window">
     <header class="title-bar">
       <div class="title-bar__identity">
-        <button class="title-bar__back" type="button" aria-label="返回">
+        <button class="title-bar__back" type="button" aria-label="返回" hidden>
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="m10 5-7 7 7 7M3 12h18" />
           </svg>
@@ -46,7 +56,7 @@
     </header>
 
     <main class="app-content">
-      <section class="calculator-page" aria-label="标准计算器" hidden>
+      <section class="calculator-page" aria-label="标准计算器">
         <header class="calculator-toolbar">
           <button class="toolbar-button" type="button" aria-label="打开导航菜单">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -73,7 +83,7 @@
 
         <div class="display-panel" aria-label="显示区">
           <div class="display-panel__expression" aria-hidden="true">&nbsp;</div>
-          <output class="display-panel__value">0</output>
+          <output class="display-panel__value">{{ displayValue }}</output>
         </div>
 
         <div class="memory-bar" aria-label="Memory 按钮栏">
@@ -112,23 +122,23 @@
           </button>
           <button type="button">÷</button>
 
-          <button type="button">7</button>
-          <button type="button">8</button>
-          <button type="button">9</button>
+          <button type="button" @click="inputDigit('7')">7</button>
+          <button type="button" @click="inputDigit('8')">8</button>
+          <button type="button" @click="inputDigit('9')">9</button>
           <button type="button">×</button>
 
-          <button type="button">4</button>
-          <button type="button">5</button>
-          <button type="button">6</button>
+          <button type="button" @click="inputDigit('4')">4</button>
+          <button type="button" @click="inputDigit('5')">5</button>
+          <button type="button" @click="inputDigit('6')">6</button>
           <button type="button">−</button>
 
-          <button type="button">1</button>
-          <button type="button">2</button>
-          <button type="button">3</button>
+          <button type="button" @click="inputDigit('1')">1</button>
+          <button type="button" @click="inputDigit('2')">2</button>
+          <button type="button" @click="inputDigit('3')">3</button>
           <button type="button">＋</button>
 
           <button type="button">＋/−</button>
-          <button type="button">0</button>
+          <button type="button" @click="inputDigit('0')">0</button>
           <button type="button">.</button>
           <button class="equals-key" type="button">＝</button>
         </div>
@@ -172,7 +182,7 @@
         </div>
       </aside>
 
-      <section class="settings-page" aria-labelledby="settings-title">
+      <section class="settings-page" aria-labelledby="settings-title" hidden>
         <h1 id="settings-title">设置</h1>
 
         <section class="settings-group" aria-labelledby="appearance-title">
