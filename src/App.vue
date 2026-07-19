@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const displayValue = ref('0')
 const expressionValue = ref('')
@@ -352,6 +352,100 @@ function calculateResult() {
   pendingOperator.value = null
   shouldResetDisplay.value = true
 }
+
+function handleKeyboardInput(event) {
+  if (event.ctrlKey) {
+    const memoryShortcut = event.key.toLowerCase()
+
+    switch (memoryShortcut) {
+      case 'l':
+        clearMemory()
+        break
+      case 'm':
+        storeMemory()
+        break
+      case 'p':
+        addToMemory()
+        break
+      case 'q':
+        subtractFromMemory()
+        break
+      case 'r':
+        recallMemory()
+        break
+      default:
+        return
+    }
+
+    event.preventDefault()
+    return
+  }
+
+  if (/^[0-9]$/.test(event.key)) {
+    inputDigit(event.key)
+  } else {
+    switch (event.key) {
+      case '.':
+      case ',':
+        inputDecimal()
+        break
+      case '+':
+        selectOperator('add')
+        break
+      case '-':
+        selectOperator('subtract')
+        break
+      case '*':
+        selectOperator('multiply')
+        break
+      case '/':
+        selectOperator('divide')
+        break
+      case '=':
+      case 'Enter':
+        calculateResult()
+        break
+      case '%':
+        applyPercentage()
+        break
+      case 'Backspace':
+        deleteLastDigit()
+        break
+      case 'Delete':
+        clearEntry()
+        break
+      case 'Escape':
+        clearAll()
+        break
+      case 'F9':
+        toggleSign()
+        break
+      case 'q':
+      case 'Q':
+        applySquare()
+        break
+      case '@':
+        applySquareRoot()
+        break
+      case 'r':
+      case 'R':
+        applyReciprocal()
+        break
+      default:
+        return
+    }
+  }
+
+  event.preventDefault()
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyboardInput)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeyboardInput)
+})
 </script>
 
 <template>
