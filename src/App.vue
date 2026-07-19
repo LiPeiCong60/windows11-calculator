@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const displayValue = ref('0')
 const expressionValue = ref('')
@@ -14,7 +14,26 @@ const historyEntries = ref([])
 const isHistoryPanelOpen = ref(false)
 const currentPage = ref('calculator')
 const isNavigationOpen = ref(false)
+const selectedTheme = ref('system')
+const systemPrefersDark = ref(false)
+const isThemeOptionsOpen = ref(false)
 let nextHistoryId = 1
+let systemThemeMediaQuery
+
+const themeLabels = {
+  light: '浅色',
+  dark: '深色',
+  system: '使用系统设置',
+}
+
+const selectedThemeLabel = computed(() => themeLabels[selectedTheme.value])
+const resolvedTheme = computed(() => {
+  if (selectedTheme.value === 'system') {
+    return systemPrefersDark.value ? 'dark' : 'light'
+  }
+
+  return selectedTheme.value
+})
 
 const operatorSymbols = {
   add: '+',
@@ -309,6 +328,15 @@ function toggleNavigation() {
   isHistoryPanelOpen.value = false
 }
 
+function selectTheme(theme) {
+  selectedTheme.value = theme
+  isThemeOptionsOpen.value = false
+}
+
+function updateSystemTheme(event) {
+  systemPrefersDark.value = event.matches
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -467,15 +495,19 @@ function handleKeyboardInput(event) {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeyboardInput)
+  systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  updateSystemTheme(systemThemeMediaQuery)
+  systemThemeMediaQuery.addEventListener('change', updateSystemTheme)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyboardInput)
+  systemThemeMediaQuery?.removeEventListener('change', updateSystemTheme)
 })
 </script>
 
 <template>
-  <div class="calculator-window">
+  <div class="calculator-window" :data-theme="resolvedTheme">
     <header class="title-bar">
       <div class="title-bar__identity">
         <button
@@ -730,14 +762,33 @@ onBeforeUnmount(() => {
 
         <section class="settings-group" aria-labelledby="appearance-title">
           <h2 id="appearance-title">外观</h2>
-          <div class="settings-card theme-card">
+          <button
+            class="settings-card theme-card"
+            type="button"
+            aria-label="应用程序主题"
+            :aria-expanded="isThemeOptionsOpen"
+            @click="isThemeOptionsOpen = !isThemeOptionsOpen"
+          >
             <div>
               <div class="settings-card__title">应用程序主题</div>
-              <div class="settings-card__description">选择要显示的应用主题</div>
+              <div class="settings-card__description">{{ selectedThemeLabel }}</div>
             </div>
             <svg class="settings-chevron" viewBox="0 0 16 10" aria-hidden="true">
               <path d="m1 1 7 7 7-7" />
             </svg>
+          </button>
+
+          <div v-if="isThemeOptionsOpen" class="theme-options" role="radiogroup" aria-label="主题选项">
+            <button
+              v-for="(label, theme) in themeLabels"
+              :key="theme"
+              type="button"
+              role="radio"
+              :aria-checked="selectedTheme === theme"
+              @click="selectTheme(theme)"
+            >
+              {{ label }}
+            </button>
           </div>
         </section>
 

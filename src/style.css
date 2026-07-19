@@ -635,6 +635,8 @@ button {
   background: #fbfbfb;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
+  color: #202020;
+  text-align: left;
 }
 
 .theme-card {
@@ -701,6 +703,92 @@ button {
 
 .github-link {
   color: #167c8b;
+}
+
+.theme-options {
+  display: grid;
+  margin-top: 8px;
+  gap: 4px;
+  padding: 6px;
+  background: #fbfbfb;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+}
+
+.theme-options button {
+  min-height: 44px;
+  padding: 0 18px;
+  color: #202020;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: left;
+}
+
+.theme-options button[aria-checked="true"] {
+  background: #e9e9e9;
+}
+
+.calculator-window[data-theme="dark"],
+.calculator-window[data-theme="dark"] .title-bar,
+.calculator-window[data-theme="dark"] .app-content {
+  color: #f5f5f5;
+  background: #202020;
+}
+
+.calculator-window[data-theme="dark"] .title-bar__title,
+.calculator-window[data-theme="dark"] .title-bar__back,
+.calculator-window[data-theme="dark"] .window-control,
+.calculator-window[data-theme="dark"] .calculator-toolbar h1,
+.calculator-window[data-theme="dark"] .toolbar-button,
+.calculator-window[data-theme="dark"] .compact-overlay-button,
+.calculator-window[data-theme="dark"] .display-panel__value,
+.calculator-window[data-theme="dark"] .memory-bar button,
+.calculator-window[data-theme="dark"] .settings-page,
+.calculator-window[data-theme="dark"] button {
+  color: #f5f5f5;
+}
+
+.calculator-window[data-theme="dark"] .keypad button,
+.calculator-window[data-theme="dark"] .settings-card,
+.calculator-window[data-theme="dark"] .theme-options,
+.calculator-window[data-theme="dark"] .memory-panel__list button,
+.calculator-window[data-theme="dark"] .history-panel__list button,
+.calculator-window[data-theme="dark"] .history-panel__clear {
+  color: #f5f5f5;
+  background: #373737;
+  border-color: #292929;
+}
+
+.calculator-window[data-theme="dark"] .keypad .equals-key {
+  color: #101010;
+  background: #73d2df;
+  border-color: #73d2df;
+}
+
+.calculator-window[data-theme="dark"] .settings-card__description,
+.calculator-window[data-theme="dark"] .settings-version,
+.calculator-window[data-theme="dark"] .history-panel__list span,
+.calculator-window[data-theme="dark"] .history-panel__empty {
+  color: #cfcfcf;
+}
+
+.calculator-window[data-theme="dark"] .theme-options button[aria-checked="true"],
+.calculator-window[data-theme="dark"] .navigation-item--selected {
+  background: #3a3a3a;
+}
+
+.calculator-window[data-theme="dark"] .navigation-pane,
+.calculator-window[data-theme="dark"] .memory-panel,
+.calculator-window[data-theme="dark"] .history-panel {
+  color: #f5f5f5;
+  background: #252525;
+  border-color: #333;
+}
+
+.calculator-window[data-theme="dark"] .navigation-section-label {
+  color: #cfcfcf;
 }
 
 @media (max-width: 562px), (max-height: 931px) {
