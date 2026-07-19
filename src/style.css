@@ -730,6 +730,95 @@ button {
   background: #e9e9e9;
 }
 
+.calculator-window[data-theme="light"],
+.calculator-window[data-theme="light"] .title-bar,
+.calculator-window[data-theme="light"] .app-content {
+  color: #1f1f1f;
+  background: #f3f3f3;
+}
+
+.calculator-window[data-theme="light"] {
+  border-color: #a8a8a8;
+}
+
+.calculator-window[data-theme="light"] .title-bar__title,
+.calculator-window[data-theme="light"] .title-bar__back,
+.calculator-window[data-theme="light"] .window-control,
+.calculator-window[data-theme="light"] .calculator-toolbar h1,
+.calculator-window[data-theme="light"] .toolbar-button,
+.calculator-window[data-theme="light"] .compact-overlay-button,
+.calculator-window[data-theme="light"] .display-panel__value,
+.calculator-window[data-theme="light"] .memory-bar button,
+.calculator-window[data-theme="light"] .settings-page,
+.calculator-window[data-theme="light"] button {
+  color: #202020;
+}
+
+.calculator-window[data-theme="light"] .display-panel__expression,
+.calculator-window[data-theme="light"] .settings-card__description,
+.calculator-window[data-theme="light"] .settings-version,
+.calculator-window[data-theme="light"] .history-panel__list span,
+.calculator-window[data-theme="light"] .history-panel__empty,
+.calculator-window[data-theme="light"] .navigation-section-label {
+  color: #606060;
+}
+
+.calculator-window[data-theme="light"] .memory-bar button:disabled {
+  color: #9c9c9c;
+}
+
+.calculator-window[data-theme="light"] .keypad button,
+.calculator-window[data-theme="light"] .settings-card,
+.calculator-window[data-theme="light"] .theme-options,
+.calculator-window[data-theme="light"] .memory-panel__list button,
+.calculator-window[data-theme="light"] .history-panel__list button,
+.calculator-window[data-theme="light"] .history-panel__clear {
+  color: #202020;
+  background: #fbfbfb;
+  border-color: #dedede;
+}
+
+.calculator-window[data-theme="light"] .keypad .equals-key {
+  color: #fff;
+  background: #287b89;
+  border-color: #287b89;
+}
+
+.calculator-window[data-theme="light"] .navigation-pane {
+  color: #202020;
+  background: #fafafa;
+  border-color: #dedede;
+}
+
+.calculator-window[data-theme="light"] .navigation-item--selected {
+  background: #f0f0f0;
+}
+
+.calculator-window[data-theme="light"] .navigation-item--selected::before {
+  background: #168ca0;
+}
+
+.calculator-window[data-theme="light"] .navigation-pane__footer,
+.calculator-window[data-theme="light"] .memory-panel,
+.calculator-window[data-theme="light"] .history-panel {
+  border-color: #dedede;
+}
+
+.calculator-window[data-theme="light"] .memory-panel,
+.calculator-window[data-theme="light"] .history-panel {
+  color: #202020;
+  background: #f3f3f3;
+}
+
+.calculator-window[data-theme="light"] .theme-options button[aria-checked="true"] {
+  background: #e9e9e9;
+}
+
+.calculator-window[data-theme="light"] .feedback-link,
+.calculator-window[data-theme="light"] .github-link {
+  color: #167c8b;
+}
+
 .calculator-window[data-theme="dark"],
 .calculator-window[data-theme="dark"] .title-bar,
 .calculator-window[data-theme="dark"] .app-content {
