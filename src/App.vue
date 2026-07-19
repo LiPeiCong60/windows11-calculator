@@ -16,6 +16,10 @@ function inputDecimal() {
 function clearDisplay() {
   displayValue.value = '0'
 }
+
+function deleteLastDigit() {
+  displayValue.value = displayValue.value.length > 1 ? displayValue.value.slice(0, -1) : '0'
+}
 </script>
 
 <template>
@@ -114,7 +118,7 @@ function clearDisplay() {
           <button type="button">%</button>
           <button type="button" @click="clearDisplay">CE</button>
           <button type="button" @click="clearDisplay">C</button>
-          <button type="button" aria-label="退格">
+          <button type="button" aria-label="退格" @click="deleteLastDigit">
             <svg class="backspace-icon" viewBox="0 0 28 22" aria-hidden="true">
               <path d="M10 3h13.5A2.5 2.5 0 0 1 26 5.5v11a2.5 2.5 0 0 1-2.5 2.5H10l-8-8 8-8Z" />
               <path d="m14 8 6 6m0-6-6 6" />
