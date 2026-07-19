@@ -1,0 +1,129 @@
+:root {
+  font-family: "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  color: #1f1f1f;
+  background: #f3f3f3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: #e7e7e7;
+}
+
+#app {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+}
+
+.calculator-window {
+  width: min(100%, 563px);
+  height: min(100vh, 932px);
+  height: min(100svh, 932px);
+  min-height: 600px;
+  overflow: hidden;
+  background: #f3f3f3;
+  border: 1px solid #a8a8a8;
+  border-radius: 10px;
+}
+
+.title-bar {
+  display: flex;
+  width: 100%;
+  height: 49px;
+  align-items: center;
+  justify-content: space-between;
+  background: #f3f3f3;
+  user-select: none;
+}
+
+.title-bar__identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 17px;
+  padding-left: 36px;
+}
+
+.app-icon {
+  width: 22px;
+  height: 25px;
+  flex: 0 0 auto;
+}
+
+.title-bar__title {
+  overflow: hidden;
+  color: #171717;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-controls {
+  display: flex;
+  height: 100%;
+  align-items: stretch;
+}
+
+.window-control {
+  display: grid;
+  width: 70px;
+  height: 100%;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.window-control svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #111;
+  stroke-linecap: round;
+  stroke-width: 1.35;
+}
+
+.app-content {
+  height: calc(100% - 49px);
+  background: #f3f3f3;
+}
+
+@media (max-width: 562px), (max-height: 931px) {
+  .calculator-window {
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .title-bar__identity {
+    gap: 12px;
+    padding-left: 18px;
+  }
+
+  .window-control {
+    width: 48px;
+  }
+}
