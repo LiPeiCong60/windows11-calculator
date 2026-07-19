@@ -1,5 +1,5 @@
 :root {
-  font-family: "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", "Microsoft YaHei UI", sans-serif;
   color: #1f1f1f;
   background: #f3f3f3;
   font-synthesis: none;
@@ -72,7 +72,7 @@ body {
   display: grid;
   width: 24px;
   height: 40px;
-  margin-right: 19px;
+  margin-right: 25px;
   margin-left: -8px;
   padding: 0;
   place-items: center;
@@ -99,6 +99,7 @@ body {
 
 .title-bar__title {
   overflow: hidden;
+  margin-left: 10px;
   color: #171717;
   font-size: 18px;
   font-weight: 400;
@@ -165,7 +166,7 @@ button:disabled {
 }
 
 .calculator-toolbar h1 {
-  margin: 0 0 1px 10px;
+  margin: 0 0 1px 19px;
   color: #1b1b1b;
   font-size: clamp(30px, 6vw, 34px);
   font-weight: 400;
@@ -236,6 +237,7 @@ button:disabled {
   color: #050505;
   font-size: clamp(54px, 14vw, 80px);
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
   line-height: 1.05;
   text-align: right;
   text-overflow: ellipsis;
@@ -408,7 +410,7 @@ button:disabled {
 
 .navigation-section-label {
   display: flex;
-  height: 57px;
+  height: 72px;
   align-items: center;
   padding: 0 30px;
   color: #565656;
@@ -624,6 +626,13 @@ button:disabled {
   font-size: 36px;
   font-weight: 400;
   line-height: 1.25;
+}
+
+.calculator-toolbar h1,
+.display-panel__value,
+.settings-page h1,
+.settings-group h2 {
+  font-family: "Segoe UI Variable Display", "Segoe UI Variable", "Segoe UI", "Microsoft YaHei UI", sans-serif;
 }
 
 .settings-group h2 {
