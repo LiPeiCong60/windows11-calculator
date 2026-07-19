@@ -6,6 +6,12 @@ const displayValue = ref('0')
 function inputDigit(digit) {
   displayValue.value = displayValue.value === '0' ? digit : `${displayValue.value}${digit}`
 }
+
+function inputDecimal() {
+  if (!displayValue.value.includes('.')) {
+    displayValue.value += '.'
+  }
+}
 </script>
 
 <template>
@@ -139,7 +145,7 @@ function inputDigit(digit) {
 
           <button type="button">＋/−</button>
           <button type="button" @click="inputDigit('0')">0</button>
-          <button type="button">.</button>
+          <button type="button" @click="inputDecimal">.</button>
           <button class="equals-key" type="button">＝</button>
         </div>
       </section>
