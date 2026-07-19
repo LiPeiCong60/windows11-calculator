@@ -5,6 +5,8 @@ const displayValue = ref('0')
 const expressionValue = ref('')
 const storedOperand = ref(null)
 const pendingOperator = ref(null)
+const lastOperator = ref(null)
+const lastOperand = ref(null)
 const shouldResetDisplay = ref(false)
 
 const operatorSymbols = {
@@ -18,6 +20,8 @@ function inputDigit(digit) {
   if (shouldResetDisplay.value) {
     if (pendingOperator.value === null) {
       expressionValue.value = ''
+      lastOperator.value = null
+      lastOperand.value = null
     }
 
     displayValue.value = digit
@@ -32,6 +36,8 @@ function inputDecimal() {
   if (shouldResetDisplay.value) {
     if (pendingOperator.value === null) {
       expressionValue.value = ''
+      lastOperator.value = null
+      lastOperand.value = null
     }
 
     displayValue.value = '0.'
@@ -54,6 +60,8 @@ function clearAll() {
   expressionValue.value = ''
   storedOperand.value = null
   pendingOperator.value = null
+  lastOperator.value = null
+  lastOperand.value = null
 }
 
 function deleteLastDigit() {
@@ -105,7 +113,35 @@ function formatResult(value) {
 }
 
 function calculateResult() {
-  if (pendingOperator.value === null || shouldResetDisplay.value) {
+  if (pendingOperator.value === null) {
+    if (lastOperator.value === null || !shouldResetDisplay.value) {
+      return
+    }
+
+    const firstOperand = Number(displayValue.value)
+    let repeatedResult
+
+    switch (lastOperator.value) {
+      case 'add':
+        repeatedResult = firstOperand + lastOperand.value
+        break
+      case 'subtract':
+        repeatedResult = firstOperand - lastOperand.value
+        break
+      case 'multiply':
+        repeatedResult = firstOperand * lastOperand.value
+        break
+      case 'divide':
+        repeatedResult = firstOperand / lastOperand.value
+        break
+    }
+
+    expressionValue.value = `${displayValue.value} ${operatorSymbols[lastOperator.value]} ${lastOperand.value} =`
+    displayValue.value = formatResult(repeatedResult)
+    return
+  }
+
+  if (shouldResetDisplay.value) {
     return
   }
 
@@ -127,6 +163,8 @@ function calculateResult() {
       break
   }
 
+  lastOperator.value = pendingOperator.value
+  lastOperand.value = secondOperand
   expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
   displayValue.value = formatResult(result)
   storedOperand.value = null
