@@ -136,6 +136,26 @@ function applyPercentage() {
   expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value}`
 }
 
+function applySquare() {
+  if (pendingOperator.value !== null && shouldResetDisplay.value) {
+    return
+  }
+
+  const originalValue = displayValue.value
+  displayValue.value = formatResult(Number(displayValue.value) ** 2)
+
+  if (pendingOperator.value !== null) {
+    expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} sqr(${originalValue})`
+    shouldResetDisplay.value = false
+    return
+  }
+
+  expressionValue.value = `sqr(${originalValue}) =`
+  lastOperator.value = null
+  lastOperand.value = null
+  shouldResetDisplay.value = true
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -301,7 +321,9 @@ function calculateResult() {
           </button>
 
           <button class="function-key" type="button"><span><sup>1</sup>⁄<sub>x</sub></span></button>
-          <button class="function-key" type="button"><span>x<sup>2</sup></span></button>
+          <button class="function-key" type="button" aria-label="平方" @click="applySquare">
+            <span>x<sup>2</sup></span>
+          </button>
           <button class="function-key" type="button" aria-label="平方根">
             <svg class="square-root-icon" viewBox="0 0 42 32" aria-hidden="true">
               <text class="square-root-icon__index" x="2" y="13">2</text>
