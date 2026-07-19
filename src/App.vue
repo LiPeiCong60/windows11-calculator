@@ -86,6 +86,9 @@ function selectOperator(operator) {
     if (shouldResetDisplay.value) {
       pendingOperator.value = operator
       expressionValue.value = `${storedOperand.value} ${operatorSymbols[operator]}`
+    } else {
+      calculateResult()
+      selectOperator(operator)
     }
 
     return
