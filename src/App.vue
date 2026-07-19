@@ -156,6 +156,26 @@ function applySquare() {
   shouldResetDisplay.value = true
 }
 
+function applySquareRoot() {
+  if (pendingOperator.value !== null && shouldResetDisplay.value) {
+    return
+  }
+
+  const originalValue = displayValue.value
+  displayValue.value = formatResult(Math.sqrt(Number(displayValue.value)))
+
+  if (pendingOperator.value !== null) {
+    expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} √(${originalValue})`
+    shouldResetDisplay.value = false
+    return
+  }
+
+  expressionValue.value = `√(${originalValue}) =`
+  lastOperator.value = null
+  lastOperand.value = null
+  shouldResetDisplay.value = true
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -324,7 +344,7 @@ function calculateResult() {
           <button class="function-key" type="button" aria-label="平方" @click="applySquare">
             <span>x<sup>2</sup></span>
           </button>
-          <button class="function-key" type="button" aria-label="平方根">
+          <button class="function-key" type="button" aria-label="平方根" @click="applySquareRoot">
             <svg class="square-root-icon" viewBox="0 0 42 32" aria-hidden="true">
               <text class="square-root-icon__index" x="2" y="13">2</text>
               <path d="M9 15.5h4l3.5 11L22 4h18" />
