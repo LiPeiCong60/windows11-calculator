@@ -107,6 +107,219 @@ body {
   background: #f3f3f3;
 }
 
+button {
+  font: inherit;
+}
+
+.calculator-page {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.calculator-toolbar {
+  display: flex;
+  height: 79px;
+  flex: 0 0 79px;
+  align-items: center;
+  padding: 0 18px;
+}
+
+.calculator-toolbar h1 {
+  margin: 0 0 1px 10px;
+  color: #1b1b1b;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.toolbar-button,
+.compact-overlay-button {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  place-items: center;
+  color: #1b1b1b;
+  background: transparent;
+  border: 0;
+}
+
+.toolbar-button svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.compact-overlay-button {
+  margin-left: 20px;
+}
+
+.compact-overlay-button svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.history-button {
+  margin-left: auto;
+}
+
+.display-panel {
+  display: flex;
+  height: 187px;
+  min-height: 114px;
+  flex: 1 1 187px;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 22px 38px;
+}
+
+.display-panel__expression {
+  min-height: 28px;
+  color: #666;
+  font-size: 15px;
+  line-height: 28px;
+}
+
+.display-panel__value {
+  max-width: 100%;
+  overflow: hidden;
+  color: #050505;
+  font-size: 80px;
+  font-weight: 500;
+  line-height: 1.05;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.memory-bar {
+  display: grid;
+  height: 52px;
+  flex: 0 0 52px;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 0 8px;
+}
+
+.memory-bar button {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #222;
+  background: transparent;
+  border: 0;
+  font-size: 21px;
+}
+
+.memory-bar button:disabled {
+  color: #9c9c9c;
+}
+
+.memory-list-button {
+  gap: 2px;
+}
+
+.memory-list-button svg {
+  width: 12px;
+  height: 8px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.keypad {
+  display: grid;
+  min-height: 0;
+  flex: 0 0 565px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  padding: 0 8px 7px;
+}
+
+.keypad button {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  place-items: center;
+  color: #202020;
+  background: #fbfbfb;
+  border: 1px solid #dedede;
+  border-radius: 7px;
+  font-size: 31px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.keypad .function-key {
+  font-family: Cambria, "Times New Roman", serif;
+  font-size: 25px;
+  font-style: italic;
+}
+
+.function-key sup,
+.function-key sub {
+  font-size: 0.65em;
+}
+
+.square-root-icon {
+  width: 38px;
+  height: 31px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.35;
+}
+
+.square-root-icon text {
+  fill: currentColor;
+  stroke: none;
+  font-family: Cambria, "Times New Roman", serif;
+  font-style: italic;
+}
+
+.square-root-icon__index {
+  font-size: 14px;
+}
+
+.square-root-icon__variable {
+  font-size: 22px;
+}
+
+.backspace-icon {
+  width: 28px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.keypad .equals-key {
+  color: #fff;
+  background: #287b89;
+  border-color: #287b89;
+}
+
 @media (max-width: 562px), (max-height: 931px) {
   .calculator-window {
     width: 100%;
@@ -114,6 +327,14 @@ body {
     height: 100svh;
     border: 0;
     border-radius: 0;
+  }
+
+  .display-panel {
+    padding-bottom: clamp(16px, 4vh, 38px);
+  }
+
+  .keypad {
+    flex: 1 1 565px;
   }
 }
 
@@ -125,5 +346,25 @@ body {
 
   .window-control {
     width: 48px;
+  }
+
+  .calculator-toolbar {
+    padding: 0 10px;
+  }
+
+  .calculator-toolbar h1 {
+    font-size: 30px;
+  }
+
+  .compact-overlay-button {
+    margin-left: 4px;
+  }
+
+  .display-panel__value {
+    font-size: 68px;
+  }
+
+  .memory-bar button {
+    font-size: 17px;
   }
 }
