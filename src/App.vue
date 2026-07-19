@@ -112,6 +112,30 @@ function formatResult(value) {
   return String(Number(value.toPrecision(15)))
 }
 
+function applyPercentage() {
+  if (pendingOperator.value === null) {
+    const originalValue = displayValue.value
+    displayValue.value = formatResult(Number(displayValue.value) / 100)
+    expressionValue.value = `${originalValue}% =`
+    lastOperator.value = null
+    lastOperand.value = null
+    shouldResetDisplay.value = true
+    return
+  }
+
+  if (shouldResetDisplay.value) {
+    return
+  }
+
+  const currentValue = Number(displayValue.value)
+  const percentageValue = ['add', 'subtract'].includes(pendingOperator.value)
+    ? (storedOperand.value * currentValue) / 100
+    : currentValue / 100
+
+  displayValue.value = formatResult(percentageValue)
+  expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value}`
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -266,7 +290,7 @@ function calculateResult() {
         </div>
 
         <div class="keypad" aria-label="计算器按键">
-          <button type="button">%</button>
+          <button type="button" @click="applyPercentage">%</button>
           <button type="button" @click="clearEntry">CE</button>
           <button type="button" @click="clearAll">C</button>
           <button type="button" aria-label="退格" @click="deleteLastDigit">
