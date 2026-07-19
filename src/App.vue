@@ -128,6 +128,44 @@
           <button class="equals-key" type="button">＝</button>
         </div>
       </section>
+
+      <aside class="navigation-pane" aria-label="计算器导航菜单">
+        <div class="navigation-pane__header">
+          <button class="navigation-menu-button" type="button" aria-label="关闭导航菜单">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 6.5h18M3 12h18M3 17.5h18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="navigation-pane__body">
+          <div class="navigation-section-label">计算器</div>
+
+          <button class="navigation-item navigation-item--selected" type="button" aria-current="page">
+            <svg class="navigation-item__icon navigation-calculator-icon" viewBox="0 0 28 28" aria-hidden="true">
+              <rect x="4" y="2.5" width="20" height="23" rx="3" />
+              <rect x="7.5" y="6" width="13" height="5" rx="0.8" />
+              <circle cx="9" cy="15.5" r="1" />
+              <circle cx="14" cy="15.5" r="1" />
+              <circle cx="19" cy="15.5" r="1" />
+              <circle cx="9" cy="20.5" r="1" />
+              <circle cx="14" cy="20.5" r="1" />
+              <circle cx="19" cy="20.5" r="1" />
+            </svg>
+            <span>标准</span>
+          </button>
+        </div>
+
+        <div class="navigation-pane__footer">
+          <button class="navigation-item navigation-settings-item" type="button">
+            <svg class="navigation-item__icon" viewBox="0 0 28 28" aria-hidden="true">
+              <path d="M11.5 3.5h5l.8 3a9 9 0 0 1 2.1 1.2l3-.8 2.5 4.3-2.2 2.2a8 8 0 0 1 0 2.4l2.2 2.2-2.5 4.3-3-.8a9 9 0 0 1-2.1 1.2l-.8 3h-5l-.8-3a9 9 0 0 1-2.1-1.2l-3 .8L3.1 18l2.2-2.2a8 8 0 0 1 0-2.4l-2.2-2.2L5.6 7l3 .8a9 9 0 0 1 2.1-1.2l.8-3.1Z" />
+              <circle cx="14" cy="14.5" r="3.5" />
+            </svg>
+            <span>设置</span>
+          </button>
+        </div>
+      </aside>
     </main>
   </div>
 </template>
