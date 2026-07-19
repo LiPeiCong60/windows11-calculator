@@ -10,6 +10,9 @@ const lastOperand = ref(null)
 const shouldResetDisplay = ref(false)
 const memoryValues = ref([])
 const isMemoryPanelOpen = ref(false)
+const historyEntries = ref([])
+const isHistoryPanelOpen = ref(false)
+let nextHistoryId = 1
 
 const operatorSymbols = {
   add: '+',
@@ -251,7 +254,37 @@ function subtractFromMemory() {
 function toggleMemoryPanel() {
   if (memoryValues.value.length > 0) {
     isMemoryPanelOpen.value = !isMemoryPanelOpen.value
+    isHistoryPanelOpen.value = false
   }
+}
+
+function addHistoryEntry(expression, result) {
+  historyEntries.value.unshift({
+    id: nextHistoryId,
+    expression,
+    result,
+  })
+  nextHistoryId += 1
+}
+
+function toggleHistoryPanel() {
+  isHistoryPanelOpen.value = !isHistoryPanelOpen.value
+  isMemoryPanelOpen.value = false
+}
+
+function clearHistory() {
+  historyEntries.value = []
+}
+
+function recallHistoryResult(result) {
+  displayValue.value = result
+  expressionValue.value = ''
+  storedOperand.value = null
+  pendingOperator.value = null
+  lastOperator.value = null
+  lastOperand.value = null
+  shouldResetDisplay.value = true
+  isHistoryPanelOpen.value = false
 }
 
 function calculateResult() {
@@ -278,8 +311,11 @@ function calculateResult() {
         break
     }
 
-    expressionValue.value = `${displayValue.value} ${operatorSymbols[lastOperator.value]} ${lastOperand.value} =`
-    displayValue.value = formatResult(repeatedResult)
+    const repeatedExpression = `${displayValue.value} ${operatorSymbols[lastOperator.value]} ${lastOperand.value} =`
+    const formattedRepeatedResult = formatResult(repeatedResult)
+    expressionValue.value = repeatedExpression
+    displayValue.value = formattedRepeatedResult
+    addHistoryEntry(repeatedExpression, formattedRepeatedResult)
     return
   }
 
@@ -307,8 +343,11 @@ function calculateResult() {
 
   lastOperator.value = pendingOperator.value
   lastOperand.value = secondOperand
-  expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
-  displayValue.value = formatResult(result)
+  const completedExpression = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
+  const formattedResult = formatResult(result)
+  expressionValue.value = completedExpression
+  displayValue.value = formattedResult
+  addHistoryEntry(completedExpression, formattedResult)
   storedOperand.value = null
   pendingOperator.value = null
   shouldResetDisplay.value = true
@@ -380,7 +419,13 @@ function calculateResult() {
             </svg>
           </button>
 
-          <button class="toolbar-button history-button" type="button" aria-label="历史记录">
+          <button
+            class="toolbar-button history-button"
+            type="button"
+            aria-label="历史记录"
+            :aria-expanded="isHistoryPanelOpen"
+            @click="toggleHistoryPanel"
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4.4 7.1A9 9 0 1 1 3 12" />
               <path d="M3 4v5h5M12 7v5l3 2" />
@@ -476,6 +521,38 @@ function calculateResult() {
               {{ formatResult(memoryValue) }}
             </button>
           </div>
+        </aside>
+
+        <aside v-if="isHistoryPanelOpen" class="history-panel" aria-label="历史记录面板">
+          <header class="history-panel__header">
+            <h2>历史记录</h2>
+            <button type="button" aria-label="关闭历史记录" @click="isHistoryPanelOpen = false">×</button>
+          </header>
+
+          <p v-if="historyEntries.length === 0" class="history-panel__empty">尚无历史记录</p>
+
+          <div v-else class="history-panel__list">
+            <button
+              v-for="entry in historyEntries"
+              :key="entry.id"
+              type="button"
+              :aria-label="`调用历史结果 ${entry.result}`"
+              @click="recallHistoryResult(entry.result)"
+            >
+              <span>{{ entry.expression }}</span>
+              <strong>{{ entry.result }}</strong>
+            </button>
+          </div>
+
+          <button
+            v-if="historyEntries.length > 0"
+            class="history-panel__clear"
+            type="button"
+            aria-label="清除历史记录"
+            @click="clearHistory"
+          >
+            清除
+          </button>
         </aside>
       </section>
 
