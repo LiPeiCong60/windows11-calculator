@@ -176,6 +176,26 @@ function applySquareRoot() {
   shouldResetDisplay.value = true
 }
 
+function applyReciprocal() {
+  if (pendingOperator.value !== null && shouldResetDisplay.value) {
+    return
+  }
+
+  const originalValue = displayValue.value
+  displayValue.value = formatResult(1 / Number(displayValue.value))
+
+  if (pendingOperator.value !== null) {
+    expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} 1/(${originalValue})`
+    shouldResetDisplay.value = false
+    return
+  }
+
+  expressionValue.value = `1/(${originalValue}) =`
+  lastOperator.value = null
+  lastOperand.value = null
+  shouldResetDisplay.value = true
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -340,7 +360,9 @@ function calculateResult() {
             </svg>
           </button>
 
-          <button class="function-key" type="button"><span><sup>1</sup>⁄<sub>x</sub></span></button>
+          <button class="function-key" type="button" aria-label="倒数" @click="applyReciprocal">
+            <span><sup>1</sup>⁄<sub>x</sub></span>
+          </button>
           <button class="function-key" type="button" aria-label="平方" @click="applySquare">
             <span>x<sup>2</sup></span>
           </button>
