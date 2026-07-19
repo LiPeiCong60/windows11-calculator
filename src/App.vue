@@ -8,6 +8,7 @@ const pendingOperator = ref(null)
 const lastOperator = ref(null)
 const lastOperand = ref(null)
 const shouldResetDisplay = ref(false)
+const hasError = ref(false)
 const memoryValues = ref([])
 const isMemoryPanelOpen = ref(false)
 const historyEntries = ref([])
@@ -19,6 +20,7 @@ const systemPrefersDark = ref(false)
 const isThemeOptionsOpen = ref(false)
 let nextHistoryId = 1
 let systemThemeMediaQuery
+const MAX_INPUT_DIGITS = 16
 
 const themeLabels = {
   light: '浅色',
@@ -43,6 +45,10 @@ const operatorSymbols = {
 }
 
 function inputDigit(digit) {
+  if (hasError.value) {
+    clearAll()
+  }
+
   if (shouldResetDisplay.value) {
     if (pendingOperator.value === null) {
       expressionValue.value = ''
@@ -55,10 +61,18 @@ function inputDigit(digit) {
     return
   }
 
+  if (displayValue.value.replace(/\D/g, '').length >= MAX_INPUT_DIGITS) {
+    return
+  }
+
   displayValue.value = displayValue.value === '0' ? digit : `${displayValue.value}${digit}`
 }
 
 function inputDecimal() {
+  if (hasError.value) {
+    clearAll()
+  }
+
   if (shouldResetDisplay.value) {
     if (pendingOperator.value === null) {
       expressionValue.value = ''
@@ -79,6 +93,7 @@ function inputDecimal() {
 function clearEntry() {
   displayValue.value = '0'
   shouldResetDisplay.value = false
+  hasError.value = false
 }
 
 function clearAll() {
@@ -91,7 +106,7 @@ function clearAll() {
 }
 
 function deleteLastDigit() {
-  if (shouldResetDisplay.value) {
+  if (shouldResetDisplay.value || hasError.value) {
     return
   }
 
@@ -100,6 +115,10 @@ function deleteLastDigit() {
 }
 
 function toggleSign() {
+  if (hasError.value) {
+    return
+  }
+
   if (shouldResetDisplay.value && pendingOperator.value !== null) {
     return
   }
@@ -116,6 +135,10 @@ function toggleSign() {
 }
 
 function selectOperator(operator) {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value !== null) {
     if (shouldResetDisplay.value) {
       pendingOperator.value = operator
@@ -135,14 +158,46 @@ function selectOperator(operator) {
 }
 
 function formatResult(value) {
-  return String(Number(value.toPrecision(15)))
+  const roundedValue = Number(value.toPrecision(15))
+  return Object.is(roundedValue, -0) ? '0' : String(roundedValue)
+}
+
+function showError(message, expression = '') {
+  displayValue.value = message
+  expressionValue.value = expression
+  storedOperand.value = null
+  pendingOperator.value = null
+  lastOperator.value = null
+  lastOperand.value = null
+  shouldResetDisplay.value = true
+  hasError.value = true
+}
+
+function formatFiniteResult(value, expression = '') {
+  if (!Number.isFinite(value)) {
+    showError('溢出', expression)
+    return null
+  }
+
+  return formatResult(value)
 }
 
 function applyPercentage() {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value === null) {
     const originalValue = displayValue.value
-    displayValue.value = formatResult(Number(displayValue.value) / 100)
-    expressionValue.value = `${originalValue}% =`
+    const completedExpression = `${originalValue}% =`
+    const formattedResult = formatFiniteResult(Number(displayValue.value) / 100, completedExpression)
+
+    if (formattedResult === null) {
+      return
+    }
+
+    displayValue.value = formattedResult
+    expressionValue.value = completedExpression
     lastOperator.value = null
     lastOperand.value = null
     shouldResetDisplay.value = true
@@ -158,17 +213,34 @@ function applyPercentage() {
     ? (storedOperand.value * currentValue) / 100
     : currentValue / 100
 
-  displayValue.value = formatResult(percentageValue)
+  const formattedResult = formatFiniteResult(percentageValue, expressionValue.value)
+
+  if (formattedResult === null) {
+    return
+  }
+
+  displayValue.value = formattedResult
   expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value}`
 }
 
 function applySquare() {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value !== null && shouldResetDisplay.value) {
     return
   }
 
   const originalValue = displayValue.value
-  displayValue.value = formatResult(Number(displayValue.value) ** 2)
+  const completedExpression = `sqr(${originalValue}) =`
+  const formattedResult = formatFiniteResult(Number(displayValue.value) ** 2, completedExpression)
+
+  if (formattedResult === null) {
+    return
+  }
+
+  displayValue.value = formattedResult
 
   if (pendingOperator.value !== null) {
     expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} sqr(${originalValue})`
@@ -176,18 +248,27 @@ function applySquare() {
     return
   }
 
-  expressionValue.value = `sqr(${originalValue}) =`
+  expressionValue.value = completedExpression
   lastOperator.value = null
   lastOperand.value = null
   shouldResetDisplay.value = true
 }
 
 function applySquareRoot() {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value !== null && shouldResetDisplay.value) {
     return
   }
 
   const originalValue = displayValue.value
+  if (Number(originalValue) < 0) {
+    showError('输入无效', `√(${originalValue})`)
+    return
+  }
+
   displayValue.value = formatResult(Math.sqrt(Number(displayValue.value)))
 
   if (pendingOperator.value !== null) {
@@ -203,11 +284,20 @@ function applySquareRoot() {
 }
 
 function applyReciprocal() {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value !== null && shouldResetDisplay.value) {
     return
   }
 
   const originalValue = displayValue.value
+  if (Number(originalValue) === 0) {
+    showError('无法除以零', `1/(${originalValue})`)
+    return
+  }
+
   displayValue.value = formatResult(1 / Number(displayValue.value))
 
   if (pendingOperator.value !== null) {
@@ -229,6 +319,7 @@ function clearMemory() {
 
 function recallMemoryValue(memoryValue) {
   displayValue.value = formatResult(memoryValue)
+  hasError.value = false
 
   if (pendingOperator.value === null) {
     expressionValue.value = ''
@@ -247,10 +338,18 @@ function recallMemory() {
 }
 
 function storeMemory() {
+  if (hasError.value) {
+    return
+  }
+
   memoryValues.value.unshift(Number(displayValue.value))
 }
 
 function addToMemory() {
+  if (hasError.value) {
+    return
+  }
+
   const currentValue = Number(displayValue.value)
 
   if (memoryValues.value.length === 0) {
@@ -262,6 +361,10 @@ function addToMemory() {
 }
 
 function subtractFromMemory() {
+  if (hasError.value) {
+    return
+  }
+
   const currentValue = Number(displayValue.value)
 
   if (memoryValues.value.length === 0) {
@@ -299,6 +402,7 @@ function clearHistory() {
 
 function recallHistoryResult(result) {
   displayValue.value = result
+  hasError.value = false
   expressionValue.value = ''
   storedOperand.value = null
   pendingOperator.value = null
@@ -338,6 +442,10 @@ function updateSystemTheme(event) {
 }
 
 function calculateResult() {
+  if (hasError.value) {
+    return
+  }
+
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
       return
@@ -357,12 +465,22 @@ function calculateResult() {
         repeatedResult = firstOperand * lastOperand.value
         break
       case 'divide':
+        if (lastOperand.value === 0) {
+          const repeatedExpression = `${displayValue.value} ${operatorSymbols[lastOperator.value]} ${lastOperand.value} =`
+          showError(firstOperand === 0 ? '结果未定义' : '无法除以零', repeatedExpression)
+          return
+        }
         repeatedResult = firstOperand / lastOperand.value
         break
     }
 
     const repeatedExpression = `${displayValue.value} ${operatorSymbols[lastOperator.value]} ${lastOperand.value} =`
-    const formattedRepeatedResult = formatResult(repeatedResult)
+    const formattedRepeatedResult = formatFiniteResult(repeatedResult, repeatedExpression)
+
+    if (formattedRepeatedResult === null) {
+      return
+    }
+
     expressionValue.value = repeatedExpression
     displayValue.value = formattedRepeatedResult
     addHistoryEntry(repeatedExpression, formattedRepeatedResult)
@@ -387,6 +505,11 @@ function calculateResult() {
       result = storedOperand.value * secondOperand
       break
     case 'divide':
+      if (secondOperand === 0) {
+        const completedExpression = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
+        showError(storedOperand.value === 0 ? '结果未定义' : '无法除以零', completedExpression)
+        return
+      }
       result = storedOperand.value / secondOperand
       break
   }
@@ -394,7 +517,12 @@ function calculateResult() {
   lastOperator.value = pendingOperator.value
   lastOperand.value = secondOperand
   const completedExpression = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
-  const formattedResult = formatResult(result)
+  const formattedResult = formatFiniteResult(result, completedExpression)
+
+  if (formattedResult === null) {
+    return
+  }
+
   expressionValue.value = completedExpression
   displayValue.value = formattedResult
   addHistoryEntry(completedExpression, formattedResult)
