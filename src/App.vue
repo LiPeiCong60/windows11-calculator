@@ -8,6 +8,8 @@ const pendingOperator = ref(null)
 const lastOperator = ref(null)
 const lastOperand = ref(null)
 const shouldResetDisplay = ref(false)
+const memoryValues = ref([])
+const isMemoryPanelOpen = ref(false)
 
 const operatorSymbols = {
   add: '+',
@@ -196,6 +198,62 @@ function applyReciprocal() {
   shouldResetDisplay.value = true
 }
 
+function clearMemory() {
+  memoryValues.value = []
+  isMemoryPanelOpen.value = false
+}
+
+function recallMemoryValue(memoryValue) {
+  displayValue.value = formatResult(memoryValue)
+
+  if (pendingOperator.value === null) {
+    expressionValue.value = ''
+    lastOperator.value = null
+    lastOperand.value = null
+  }
+
+  shouldResetDisplay.value = false
+  isMemoryPanelOpen.value = false
+}
+
+function recallMemory() {
+  if (memoryValues.value.length > 0) {
+    recallMemoryValue(memoryValues.value[0])
+  }
+}
+
+function storeMemory() {
+  memoryValues.value.unshift(Number(displayValue.value))
+}
+
+function addToMemory() {
+  const currentValue = Number(displayValue.value)
+
+  if (memoryValues.value.length === 0) {
+    memoryValues.value.push(currentValue)
+    return
+  }
+
+  memoryValues.value[0] = Number(formatResult(memoryValues.value[0] + currentValue))
+}
+
+function subtractFromMemory() {
+  const currentValue = Number(displayValue.value)
+
+  if (memoryValues.value.length === 0) {
+    memoryValues.value.push(-currentValue)
+    return
+  }
+
+  memoryValues.value[0] = Number(formatResult(memoryValues.value[0] - currentValue))
+}
+
+function toggleMemoryPanel() {
+  if (memoryValues.value.length > 0) {
+    isMemoryPanelOpen.value = !isMemoryPanelOpen.value
+  }
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -336,12 +394,18 @@ function calculateResult() {
         </div>
 
         <div class="memory-bar" aria-label="Memory 按钮栏">
-          <button type="button" disabled>MC</button>
-          <button type="button" disabled>MR</button>
-          <button type="button">M+</button>
-          <button type="button">M−</button>
-          <button type="button">MS</button>
-          <button class="memory-list-button" type="button" disabled>
+          <button type="button" :disabled="memoryValues.length === 0" @click="clearMemory">MC</button>
+          <button type="button" :disabled="memoryValues.length === 0" @click="recallMemory">MR</button>
+          <button type="button" @click="addToMemory">M+</button>
+          <button type="button" @click="subtractFromMemory">M−</button>
+          <button type="button" @click="storeMemory">MS</button>
+          <button
+            class="memory-list-button"
+            type="button"
+            :disabled="memoryValues.length === 0"
+            :aria-expanded="isMemoryPanelOpen"
+            @click="toggleMemoryPanel"
+          >
             <span>M</span>
             <svg viewBox="0 0 12 8" aria-hidden="true">
               <path d="m1 1 5 5 5-5" />
@@ -395,6 +459,24 @@ function calculateResult() {
           <button type="button" @click="inputDecimal">.</button>
           <button class="equals-key" type="button" @click="calculateResult">＝</button>
         </div>
+
+        <aside v-if="isMemoryPanelOpen" class="memory-panel" aria-label="内存列表">
+          <header class="memory-panel__header">
+            <h2>内存</h2>
+            <button type="button" aria-label="关闭内存列表" @click="isMemoryPanelOpen = false">×</button>
+          </header>
+          <div class="memory-panel__list">
+            <button
+              v-for="(memoryValue, index) in memoryValues"
+              :key="`${memoryValue}-${index}`"
+              type="button"
+              :aria-label="`调用内存 ${formatResult(memoryValue)}`"
+              @click="recallMemoryValue(memoryValue)"
+            >
+              {{ formatResult(memoryValue) }}
+            </button>
+          </div>
+        </aside>
       </section>
 
       <aside class="navigation-pane" aria-label="计算器导航菜单" hidden>
