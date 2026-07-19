@@ -138,7 +138,14 @@ body {
 }
 
 button {
+  appearance: none;
+  cursor: default;
   font: inherit;
+  user-select: none;
+}
+
+button:disabled {
+  pointer-events: none;
 }
 
 .calculator-page {
@@ -738,6 +745,15 @@ button {
 }
 
 .calculator-window[data-theme="light"] {
+  --accent-fill-hover: #236f7c;
+  --accent-fill-pressed: #1d626d;
+  --card-fill-hover: #f6f6f6;
+  --card-fill-pressed: #ededed;
+  --control-fill-hover: rgb(0 0 0 / 6%);
+  --control-fill-pressed: rgb(0 0 0 / 10%);
+  --focus-ring: #1a1a1a;
+  --key-fill-hover: #f6f6f6;
+  --key-fill-pressed: #ededed;
   border-color: #a8a8a8;
 }
 
@@ -827,6 +843,15 @@ button {
 }
 
 .calculator-window[data-theme="dark"] {
+  --accent-fill-hover: #69c8d4;
+  --accent-fill-pressed: #5cb7c3;
+  --card-fill-hover: #323232;
+  --card-fill-pressed: #262626;
+  --control-fill-hover: rgb(255 255 255 / 8%);
+  --control-fill-pressed: rgb(255 255 255 / 4%);
+  --focus-ring: #fff;
+  --key-fill-hover: #424242;
+  --key-fill-pressed: #323232;
   border-color: #6d6d6d;
 }
 
@@ -919,6 +944,141 @@ button {
 
 .calculator-window[data-theme="dark"] .github-link {
   color: #18889a;
+}
+
+.navigation-pane,
+.memory-panel,
+.history-panel {
+  -webkit-backdrop-filter: saturate(125%) blur(18px);
+  backdrop-filter: saturate(125%) blur(18px);
+}
+
+.calculator-window[data-theme="light"] .navigation-pane {
+  background: rgb(250 250 250 / 96%);
+}
+
+.calculator-window[data-theme="light"] .memory-panel,
+.calculator-window[data-theme="light"] .history-panel {
+  background: rgb(243 243 243 / 96%);
+}
+
+.calculator-window[data-theme="dark"] .navigation-pane {
+  background: rgb(36 36 36 / 96%);
+}
+
+.calculator-window[data-theme="dark"] .memory-panel,
+.calculator-window[data-theme="dark"] .history-panel {
+  background: rgb(32 32 32 / 96%);
+}
+
+.keypad button,
+.settings-card,
+.theme-options,
+.memory-panel__list button,
+.history-panel__list button,
+.history-panel__clear {
+  background-clip: padding-box;
+}
+
+.toolbar-button,
+.compact-overlay-button,
+.title-bar__back,
+.navigation-menu-button,
+.memory-bar button,
+.navigation-item,
+.memory-panel__header button,
+.history-panel__header button,
+.theme-options button {
+  border-radius: 5px;
+}
+
+@media (hover: hover) {
+  .toolbar-button:hover,
+  .compact-overlay-button:hover,
+  .title-bar__back:hover,
+  .navigation-menu-button:hover,
+  .memory-bar button:hover,
+  .navigation-item:hover,
+  .memory-panel__header button:hover,
+  .history-panel__header button:hover,
+  .theme-options button:hover {
+    background: var(--control-fill-hover);
+  }
+
+  .keypad button:hover {
+    background: var(--key-fill-hover);
+  }
+
+  .settings-card:hover,
+  .memory-panel__list button:hover,
+  .history-panel__list button:hover,
+  .history-panel__clear:hover {
+    background: var(--card-fill-hover);
+  }
+
+  .keypad .equals-key:hover {
+    background: var(--accent-fill-hover);
+    border-color: var(--accent-fill-hover);
+  }
+
+  .window-control:hover {
+    background: var(--control-fill-hover);
+  }
+
+  .window-control--close:hover {
+    color: #fff;
+    background: #c42b1c;
+  }
+
+  .window-control--close:hover svg {
+    stroke: #fff;
+  }
+}
+
+.toolbar-button:active,
+.compact-overlay-button:active,
+.title-bar__back:active,
+.navigation-menu-button:active,
+.memory-bar button:active,
+.navigation-item:active,
+.memory-panel__header button:active,
+.history-panel__header button:active,
+.theme-options button:active {
+  background: var(--control-fill-pressed);
+}
+
+.keypad button:active {
+  background: var(--key-fill-pressed);
+}
+
+.settings-card:active,
+.memory-panel__list button:active,
+.history-panel__list button:active,
+.history-panel__clear:active {
+  background: var(--card-fill-pressed);
+}
+
+.keypad .equals-key:active {
+  background: var(--accent-fill-pressed);
+  border-color: var(--accent-fill-pressed);
+}
+
+.window-control:active {
+  background: var(--control-fill-pressed);
+}
+
+.window-control--close:active {
+  background: #a4261a;
+}
+
+.calculator-window button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -3px;
+}
+
+.calculator-window .equals-key:focus-visible,
+.calculator-window .navigation-item--selected:focus-visible {
+  outline-offset: -4px;
 }
 
 @media (max-width: 562px), (max-height: 931px) {
