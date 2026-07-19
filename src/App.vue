@@ -12,6 +12,8 @@ const memoryValues = ref([])
 const isMemoryPanelOpen = ref(false)
 const historyEntries = ref([])
 const isHistoryPanelOpen = ref(false)
+const currentPage = ref('calculator')
+const isNavigationOpen = ref(false)
 let nextHistoryId = 1
 
 const operatorSymbols = {
@@ -287,6 +289,26 @@ function recallHistoryResult(result) {
   isHistoryPanelOpen.value = false
 }
 
+function showCalculator() {
+  currentPage.value = 'calculator'
+  isNavigationOpen.value = false
+  isMemoryPanelOpen.value = false
+  isHistoryPanelOpen.value = false
+}
+
+function showSettings() {
+  currentPage.value = 'settings'
+  isNavigationOpen.value = false
+  isMemoryPanelOpen.value = false
+  isHistoryPanelOpen.value = false
+}
+
+function toggleNavigation() {
+  isNavigationOpen.value = !isNavigationOpen.value
+  isMemoryPanelOpen.value = false
+  isHistoryPanelOpen.value = false
+}
+
 function calculateResult() {
   if (pendingOperator.value === null) {
     if (lastOperator.value === null || !shouldResetDisplay.value) {
@@ -354,6 +376,10 @@ function calculateResult() {
 }
 
 function handleKeyboardInput(event) {
+  if (currentPage.value !== 'calculator') {
+    return
+  }
+
   if (event.ctrlKey) {
     const memoryShortcut = event.key.toLowerCase()
 
@@ -452,7 +478,13 @@ onBeforeUnmount(() => {
   <div class="calculator-window">
     <header class="title-bar">
       <div class="title-bar__identity">
-        <button class="title-bar__back" type="button" aria-label="返回" hidden>
+        <button
+          v-if="currentPage === 'settings'"
+          class="title-bar__back"
+          type="button"
+          aria-label="返回"
+          @click="showCalculator"
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="m10 5-7 7 7 7M3 12h18" />
           </svg>
@@ -496,9 +528,9 @@ onBeforeUnmount(() => {
     </header>
 
     <main class="app-content">
-      <section class="calculator-page" aria-label="标准计算器">
+      <section v-if="currentPage === 'calculator'" class="calculator-page" aria-label="标准计算器">
         <header class="calculator-toolbar">
-          <button class="toolbar-button" type="button" aria-label="打开导航菜单">
+          <button class="toolbar-button" type="button" aria-label="打开导航菜单" @click="toggleNavigation">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 6.5h18M3 12h18M3 17.5h18" />
             </svg>
@@ -650,9 +682,9 @@ onBeforeUnmount(() => {
         </aside>
       </section>
 
-      <aside class="navigation-pane" aria-label="计算器导航菜单" hidden>
+      <aside v-if="isNavigationOpen" class="navigation-pane" aria-label="计算器导航菜单">
         <div class="navigation-pane__header">
-          <button class="navigation-menu-button" type="button" aria-label="关闭导航菜单">
+          <button class="navigation-menu-button" type="button" aria-label="关闭导航菜单" @click="toggleNavigation">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 6.5h18M3 12h18M3 17.5h18" />
             </svg>
@@ -662,7 +694,12 @@ onBeforeUnmount(() => {
         <div class="navigation-pane__body">
           <div class="navigation-section-label">计算器</div>
 
-          <button class="navigation-item navigation-item--selected" type="button" aria-current="page">
+          <button
+            class="navigation-item navigation-item--selected"
+            type="button"
+            aria-current="page"
+            @click="showCalculator"
+          >
             <svg class="navigation-item__icon navigation-calculator-icon" viewBox="0 0 28 28" aria-hidden="true">
               <rect x="4" y="2.5" width="20" height="23" rx="3" />
               <rect x="7.5" y="6" width="13" height="5" rx="0.8" />
@@ -678,7 +715,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="navigation-pane__footer">
-          <button class="navigation-item navigation-settings-item" type="button">
+          <button class="navigation-item navigation-settings-item" type="button" @click="showSettings">
             <svg class="navigation-item__icon" viewBox="0 0 28 28" aria-hidden="true">
               <path d="M11.5 3.5h5l.8 3a9 9 0 0 1 2.1 1.2l3-.8 2.5 4.3-2.2 2.2a8 8 0 0 1 0 2.4l2.2 2.2-2.5 4.3-3-.8a9 9 0 0 1-2.1 1.2l-.8 3h-5l-.8-3a9 9 0 0 1-2.1-1.2l-3 .8L3.1 18l2.2-2.2a8 8 0 0 1 0-2.4l-2.2-2.2L5.6 7l3 .8a9 9 0 0 1 2.1-1.2l.8-3.1Z" />
               <circle cx="14" cy="14.5" r="3.5" />
@@ -688,7 +725,7 @@ onBeforeUnmount(() => {
         </div>
       </aside>
 
-      <section class="settings-page" aria-labelledby="settings-title" hidden>
+      <section v-if="currentPage === 'settings'" class="settings-page" aria-labelledby="settings-title">
         <h1 id="settings-title">设置</h1>
 
         <section class="settings-group" aria-labelledby="appearance-title">
