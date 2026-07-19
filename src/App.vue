@@ -2,27 +2,76 @@
 import { ref } from 'vue'
 
 const displayValue = ref('0')
+const expressionValue = ref('')
+const storedOperand = ref(null)
+const pendingOperator = ref(null)
+const shouldResetDisplay = ref(false)
+
+const operatorSymbols = {
+  add: '+',
+  subtract: '−',
+  multiply: '×',
+  divide: '÷',
+}
 
 function inputDigit(digit) {
+  if (shouldResetDisplay.value) {
+    if (pendingOperator.value === null) {
+      expressionValue.value = ''
+    }
+
+    displayValue.value = digit
+    shouldResetDisplay.value = false
+    return
+  }
+
   displayValue.value = displayValue.value === '0' ? digit : `${displayValue.value}${digit}`
 }
 
 function inputDecimal() {
+  if (shouldResetDisplay.value) {
+    if (pendingOperator.value === null) {
+      expressionValue.value = ''
+    }
+
+    displayValue.value = '0.'
+    shouldResetDisplay.value = false
+    return
+  }
+
   if (!displayValue.value.includes('.')) {
     displayValue.value += '.'
   }
 }
 
-function clearDisplay() {
+function clearEntry() {
   displayValue.value = '0'
+  shouldResetDisplay.value = false
+}
+
+function clearAll() {
+  clearEntry()
+  expressionValue.value = ''
+  storedOperand.value = null
+  pendingOperator.value = null
 }
 
 function deleteLastDigit() {
+  if (shouldResetDisplay.value) {
+    return
+  }
+
   const nextValue = displayValue.value.slice(0, -1)
   displayValue.value = nextValue && nextValue !== '-' ? nextValue : '0'
 }
 
 function toggleSign() {
+  if (shouldResetDisplay.value && pendingOperator.value !== null) {
+    return
+  }
+
+  shouldResetDisplay.value = false
+
   if (displayValue.value === '0') {
     return
   }
@@ -30,6 +79,56 @@ function toggleSign() {
   displayValue.value = displayValue.value.startsWith('-')
     ? displayValue.value.slice(1)
     : `-${displayValue.value}`
+}
+
+function selectOperator(operator) {
+  if (pendingOperator.value !== null) {
+    if (shouldResetDisplay.value) {
+      pendingOperator.value = operator
+      expressionValue.value = `${storedOperand.value} ${operatorSymbols[operator]}`
+    }
+
+    return
+  }
+
+  storedOperand.value = Number(displayValue.value)
+  pendingOperator.value = operator
+  shouldResetDisplay.value = true
+  expressionValue.value = `${displayValue.value} ${operatorSymbols[operator]}`
+}
+
+function formatResult(value) {
+  return String(Number(value.toPrecision(15)))
+}
+
+function calculateResult() {
+  if (pendingOperator.value === null || shouldResetDisplay.value) {
+    return
+  }
+
+  const secondOperand = Number(displayValue.value)
+  let result
+
+  switch (pendingOperator.value) {
+    case 'add':
+      result = storedOperand.value + secondOperand
+      break
+    case 'subtract':
+      result = storedOperand.value - secondOperand
+      break
+    case 'multiply':
+      result = storedOperand.value * secondOperand
+      break
+    case 'divide':
+      result = storedOperand.value / secondOperand
+      break
+  }
+
+  expressionValue.value = `${storedOperand.value} ${operatorSymbols[pendingOperator.value]} ${displayValue.value} =`
+  displayValue.value = formatResult(result)
+  storedOperand.value = null
+  pendingOperator.value = null
+  shouldResetDisplay.value = true
 }
 </script>
 
@@ -107,7 +206,7 @@ function toggleSign() {
         </header>
 
         <div class="display-panel" aria-label="显示区">
-          <div class="display-panel__expression" aria-hidden="true">&nbsp;</div>
+          <div class="display-panel__expression" aria-hidden="true">{{ expressionValue || '\u00a0' }}</div>
           <output class="display-panel__value">{{ displayValue }}</output>
         </div>
 
@@ -127,8 +226,8 @@ function toggleSign() {
 
         <div class="keypad" aria-label="计算器按键">
           <button type="button">%</button>
-          <button type="button" @click="clearDisplay">CE</button>
-          <button type="button" @click="clearDisplay">C</button>
+          <button type="button" @click="clearEntry">CE</button>
+          <button type="button" @click="clearAll">C</button>
           <button type="button" aria-label="退格" @click="deleteLastDigit">
             <svg class="backspace-icon" viewBox="0 0 28 22" aria-hidden="true">
               <path d="M10 3h13.5A2.5 2.5 0 0 1 26 5.5v11a2.5 2.5 0 0 1-2.5 2.5H10l-8-8 8-8Z" />
@@ -145,27 +244,27 @@ function toggleSign() {
               <text class="square-root-icon__variable" x="24" y="26">x</text>
             </svg>
           </button>
-          <button type="button">÷</button>
+          <button type="button" @click="selectOperator('divide')">÷</button>
 
           <button type="button" @click="inputDigit('7')">7</button>
           <button type="button" @click="inputDigit('8')">8</button>
           <button type="button" @click="inputDigit('9')">9</button>
-          <button type="button">×</button>
+          <button type="button" @click="selectOperator('multiply')">×</button>
 
           <button type="button" @click="inputDigit('4')">4</button>
           <button type="button" @click="inputDigit('5')">5</button>
           <button type="button" @click="inputDigit('6')">6</button>
-          <button type="button">−</button>
+          <button type="button" @click="selectOperator('subtract')">−</button>
 
           <button type="button" @click="inputDigit('1')">1</button>
           <button type="button" @click="inputDigit('2')">2</button>
           <button type="button" @click="inputDigit('3')">3</button>
-          <button type="button">＋</button>
+          <button type="button" @click="selectOperator('add')">＋</button>
 
           <button type="button" @click="toggleSign">＋/−</button>
           <button type="button" @click="inputDigit('0')">0</button>
           <button type="button" @click="inputDecimal">.</button>
-          <button class="equals-key" type="button">＝</button>
+          <button class="equals-key" type="button" @click="calculateResult">＝</button>
         </div>
       </section>
 
