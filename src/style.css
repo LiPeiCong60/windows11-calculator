@@ -976,6 +976,81 @@ button:disabled {
   box-shadow: var(--shadow-panel);
 }
 
+.toolbar-button,
+.compact-overlay-button,
+.title-bar__back,
+.navigation-menu-button,
+.memory-bar button,
+.navigation-item,
+.memory-panel__header button,
+.history-panel__header button,
+.theme-options button,
+.window-control {
+  transition:
+    background-color 100ms ease-out,
+    color 100ms ease-out,
+    transform 80ms ease-out;
+}
+
+.keypad button,
+.settings-card,
+.memory-panel__list button,
+.history-panel__list button,
+.history-panel__clear {
+  transition:
+    background-color 100ms ease-out,
+    border-color 100ms ease-out,
+    box-shadow 100ms ease-out,
+    transform 80ms ease-out;
+}
+
+.settings-chevron {
+  transition: transform 160ms cubic-bezier(0.33, 0, 0.67, 1);
+}
+
+.theme-card[aria-expanded="true"] .settings-chevron {
+  transform: rotate(180deg);
+}
+
+.navigation-pane-enter-active,
+.navigation-pane-leave-active {
+  transition:
+    opacity 140ms ease-out,
+    transform 180ms cubic-bezier(0.33, 0, 0.1, 1);
+}
+
+.navigation-pane-enter-from,
+.navigation-pane-leave-to {
+  opacity: 0;
+  transform: translateX(-18px);
+}
+
+.side-panel-enter-active,
+.side-panel-leave-active {
+  transition:
+    opacity 140ms ease-out,
+    transform 180ms cubic-bezier(0.33, 0, 0.1, 1);
+}
+
+.side-panel-enter-from,
+.side-panel-leave-to {
+  opacity: 0;
+  transform: translateX(18px);
+}
+
+.theme-options-enter-active,
+.theme-options-leave-active {
+  transition:
+    opacity 120ms ease-out,
+    transform 140ms cubic-bezier(0.33, 0, 0.1, 1);
+}
+
+.theme-options-enter-from,
+.theme-options-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
 .navigation-pane,
 .memory-panel,
 .history-panel {
@@ -1075,11 +1150,13 @@ button:disabled {
 .history-panel__header button:active,
 .theme-options button:active {
   background: var(--control-fill-pressed);
+  transform: scale(0.97);
 }
 
 .keypad button:active {
   background: var(--key-fill-pressed);
   box-shadow: none;
+  transform: scale(0.985);
 }
 
 .settings-card:active,
@@ -1088,6 +1165,7 @@ button:disabled {
 .history-panel__clear:active {
   background: var(--card-fill-pressed);
   box-shadow: none;
+  transform: scale(0.995);
 }
 
 .keypad .equals-key:active {
@@ -1111,6 +1189,17 @@ button:disabled {
 .calculator-window .equals-key:focus-visible,
 .calculator-window .navigation-item--selected:focus-visible {
   outline-offset: -4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calculator-window *,
+  .calculator-window *::before,
+  .calculator-window *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
 @media (max-width: 562px), (max-height: 931px) {

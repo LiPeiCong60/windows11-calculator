@@ -791,58 +791,63 @@ onBeforeUnmount(() => {
           <button class="equals-key" type="button" @click="calculateResult">＝</button>
         </div>
 
-        <aside v-if="isMemoryPanelOpen" class="memory-panel" aria-label="内存列表">
-          <header class="memory-panel__header">
-            <h2>内存</h2>
-            <button type="button" aria-label="关闭内存列表" @click="isMemoryPanelOpen = false">×</button>
-          </header>
-          <div class="memory-panel__list">
+        <Transition name="side-panel">
+          <aside v-if="isMemoryPanelOpen" class="memory-panel" aria-label="内存列表">
+            <header class="memory-panel__header">
+              <h2>内存</h2>
+              <button type="button" aria-label="关闭内存列表" @click="isMemoryPanelOpen = false">×</button>
+            </header>
+            <div class="memory-panel__list">
+              <button
+                v-for="(memoryValue, index) in memoryValues"
+                :key="`${memoryValue}-${index}`"
+                type="button"
+                :aria-label="`调用内存 ${formatResult(memoryValue)}`"
+                @click="recallMemoryValue(memoryValue)"
+              >
+                {{ formatResult(memoryValue) }}
+              </button>
+            </div>
+          </aside>
+        </Transition>
+
+        <Transition name="side-panel">
+          <aside v-if="isHistoryPanelOpen" class="history-panel" aria-label="历史记录面板">
+            <header class="history-panel__header">
+              <h2>历史记录</h2>
+              <button type="button" aria-label="关闭历史记录" @click="isHistoryPanelOpen = false">×</button>
+            </header>
+
+            <p v-if="historyEntries.length === 0" class="history-panel__empty">尚无历史记录</p>
+
+            <div v-else class="history-panel__list">
+              <button
+                v-for="entry in historyEntries"
+                :key="entry.id"
+                type="button"
+                :aria-label="`调用历史结果 ${entry.result}`"
+                @click="recallHistoryResult(entry.result)"
+              >
+                <span>{{ entry.expression }}</span>
+                <strong>{{ entry.result }}</strong>
+              </button>
+            </div>
+
             <button
-              v-for="(memoryValue, index) in memoryValues"
-              :key="`${memoryValue}-${index}`"
+              v-if="historyEntries.length > 0"
+              class="history-panel__clear"
               type="button"
-              :aria-label="`调用内存 ${formatResult(memoryValue)}`"
-              @click="recallMemoryValue(memoryValue)"
+              aria-label="清除历史记录"
+              @click="clearHistory"
             >
-              {{ formatResult(memoryValue) }}
+              清除
             </button>
-          </div>
-        </aside>
-
-        <aside v-if="isHistoryPanelOpen" class="history-panel" aria-label="历史记录面板">
-          <header class="history-panel__header">
-            <h2>历史记录</h2>
-            <button type="button" aria-label="关闭历史记录" @click="isHistoryPanelOpen = false">×</button>
-          </header>
-
-          <p v-if="historyEntries.length === 0" class="history-panel__empty">尚无历史记录</p>
-
-          <div v-else class="history-panel__list">
-            <button
-              v-for="entry in historyEntries"
-              :key="entry.id"
-              type="button"
-              :aria-label="`调用历史结果 ${entry.result}`"
-              @click="recallHistoryResult(entry.result)"
-            >
-              <span>{{ entry.expression }}</span>
-              <strong>{{ entry.result }}</strong>
-            </button>
-          </div>
-
-          <button
-            v-if="historyEntries.length > 0"
-            class="history-panel__clear"
-            type="button"
-            aria-label="清除历史记录"
-            @click="clearHistory"
-          >
-            清除
-          </button>
-        </aside>
+          </aside>
+        </Transition>
       </section>
 
-      <aside v-if="isNavigationOpen" class="navigation-pane" aria-label="计算器导航菜单">
+      <Transition name="navigation-pane">
+        <aside v-if="isNavigationOpen" class="navigation-pane" aria-label="计算器导航菜单">
         <div class="navigation-pane__header">
           <button class="navigation-menu-button" type="button" aria-label="关闭导航菜单" @click="toggleNavigation">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -883,7 +888,8 @@ onBeforeUnmount(() => {
             <span>设置</span>
           </button>
         </div>
-      </aside>
+        </aside>
+      </Transition>
 
       <section v-if="currentPage === 'settings'" class="settings-page" aria-labelledby="settings-title">
         <h1 id="settings-title">设置</h1>
@@ -906,18 +912,20 @@ onBeforeUnmount(() => {
             </svg>
           </button>
 
-          <div v-if="isThemeOptionsOpen" class="theme-options" role="radiogroup" aria-label="主题选项">
-            <button
-              v-for="(label, theme) in themeLabels"
-              :key="theme"
-              type="button"
-              role="radio"
-              :aria-checked="selectedTheme === theme"
-              @click="selectTheme(theme)"
-            >
-              {{ label }}
-            </button>
-          </div>
+          <Transition name="theme-options">
+            <div v-if="isThemeOptionsOpen" class="theme-options" role="radiogroup" aria-label="主题选项">
+              <button
+                v-for="(label, theme) in themeLabels"
+                :key="theme"
+                type="button"
+                role="radio"
+                :aria-checked="selectedTheme === theme"
+                @click="selectTheme(theme)"
+              >
+                {{ label }}
+              </button>
+            </div>
+          </Transition>
         </section>
 
         <section class="settings-group about-group" aria-labelledby="about-title">
